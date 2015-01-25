@@ -1,0 +1,10 @@
++------------------------------+------------+-----------------------------+
+| Action                       | Syntax     | Example                     |
++------------------------------+------------+-----------------------------+
+| Declare a pointer            | *          | int *num;                   |
+| Get adress held by pointer   | nothing    | cout << num;                |
+| Set adress held by pointer   | nothing    | int *num; num = <ADDRESS>;  |
+| Get value at that address    | *          | cout << *num;               |
+| Set value at that address    | *          | *num = 5;                   |
+| get address of a variable    | &          | int y; int *num; num = & y; |
++------------------------------+------------+-----------------------------+
