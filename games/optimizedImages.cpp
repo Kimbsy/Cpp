@@ -1,4 +1,5 @@
 #include "SDL/SDL.h"
+#include "SDL/SDL_image.h"
 #include <string>
 
 // define the attributes of the screen
@@ -19,19 +20,19 @@ SDL_Surface* screen = NULL;
  */
 SDL_Surface* loadImage(std::string filename)
 {
-  // temporary storage for the image that's loaded
+  // the image that's loaded
   SDL_Surface* loadedImage = NULL;
 
   // the optimized image that will be used
   SDL_Surface* optimizedImage = NULL;
 
-  // load the image
-  loadedImage = SDL_LoadBMP(filename.c_str());
+  // load the image using SDL_image
+  loadedImage = IMG_Load(filename.c_str());
 
-  // if nothing went wrong lodaing the image
+  // if image was loaded
   if (loadedImage != NULL)
   {
-    // create an optimized image
+    // create optimized image
     optimizedImage = SDL_DisplayFormat(loadedImage);
 
     // free the old image
@@ -88,6 +89,9 @@ int main(int argc, char* args[])
 
   // apply the background to the screen
   apply_surface(0, 0, background, screen);
+  apply_surface(320, 0, background, screen);
+  apply_surface(0, 240, background, screen);
+  apply_surface(320, 240, background, screen);
 
   // apply the message to the screen
   apply_surface(180, 140, message, screen);
@@ -110,4 +114,4 @@ int main(int argc, char* args[])
   return 0;
 }
 
-// g++ -o myprogram mysource.cpp -lSDL
+// g++ -o myprogram mysource.cpp -lSDL -lSDL_image
