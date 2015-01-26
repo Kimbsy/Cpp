@@ -49,7 +49,7 @@ SDL_Surface* loadImage(std::string filename)
  * @param x           (x offset)
  * @param y           (y offset)
  * @param source      (source surface)
- * @param destination (estination surface)
+ * @param destination (destination surface)
  */
 void apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination)
 {

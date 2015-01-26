@@ -173,4 +173,12 @@ int main (int argc, char* args[])
   return 0;
 }
 
+
+
+
+
+
+
+
+
 // g++ -o myprogram mysource.cpp -lSDL -lSDL_image
