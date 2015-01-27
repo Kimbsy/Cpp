@@ -8,12 +8,14 @@ const int SCREEN_HEIGHT = 480;
 const int SCREEN_BBP = 32;
 
 // the surfaces
-SDL_Surface* background;
-SDL_Surface* foo;
-SDL_Surface* screen;
+SDL_Surface* dots = NULL;
+SDL_Surface* screen = NULL;
 
 // the event structure that will be used
 SDL_Event event;
+
+// the portions of the sprite map to be blitted
+SDL_Rect clip[4];
 
 /**
  * function to load images
@@ -63,18 +65,19 @@ SDL_Surface* loadImage(std::string filename)
  * @param y           (y offset)
  * @param source      (source surface)
  * @param destination (destination surface)
+ * @param clip        (what part of the surface we want to blit)
  */
-void applySurface(int x, int y, SDL_Surface* source, SDL_Surface* destination)
+void applySurface(int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip = NULL)
 {
-  // temporary rectangle to hold the offsets
+  // holds offsets
   SDL_Rect offset;
 
   // get the offsets
   offset.x = x;
   offset.y = y;
 
-  // blit the surface
-  SDL_BlitSurface(source, NULL, destination, &offset);
+  // blit
+  SDL_BlitSurface(source, clip, destination, &offset);
 }
 
 /**
@@ -114,11 +117,10 @@ bool init()
 bool loadFiles()
 {
   // load the image
-  background = loadImage("background.png");
-  foo = loadImage("foo.png");
+  dots = loadImage("dots.png");
 
   // if there was an error in loading the image
-  if (background == NULL || foo == NULL)
+  if (dots == NULL)
   {
     return false;
   }
@@ -133,8 +135,7 @@ bool loadFiles()
 void cleanUp()
 {
   // Free the image
-  SDL_FreeSurface(background);
-  SDL_FreeSurface(foo);
+  SDL_FreeSurface(dots);
 
   // quit SDL
   SDL_Quit();
@@ -165,9 +166,38 @@ int main (int argc, char* args[])
     return 1;
   }
 
+  // clip range for the top left
+  clip[0].x = 0;
+  clip[0].y = 0;
+  clip[0].w = 100;
+  clip[0].h = 100;
+
+  // clip range for the top right
+  clip[1].x = 100;
+  clip[1].y = 0;
+  clip[1].w = 100;
+  clip[1].h = 100;
+
+  // clip range for the bottom left
+  clip[2].x = 0;
+  clip[2].y = 100;
+  clip[2].w = 100;
+  clip[2].h = 100;
+
+  // clip range for the bottom right
+  clip[3].x = 100;
+  clip[3].y = 100;
+  clip[3].w = 100;
+  clip[3].h = 100;
+
+  // fill the screen white
+  SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 0xFF, 0xFF, 0xFF));
+
   // apply the surface to the screen
-  applySurface(0, 0, background, screen);
-  applySurface(240, 190, foo, screen);
+  applySurface(0, 0, dots, screen, &clip[0]);
+  applySurface(540, 0, dots, screen, &clip[1]);
+  applySurface(0, 380, dots, screen, &clip[2]);
+  applySurface(540, 380, dots, screen, &clip[3]);
 
   // update the screen
   if (SDL_Flip(screen) == -1)
