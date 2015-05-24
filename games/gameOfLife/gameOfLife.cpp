@@ -11,7 +11,9 @@ using namespace std;
 /**
  * Command line version of Conway's Game of Life.
  *
+ * sudo apt-get install libncurses5-dev
  * g++ gameOfLife.cpp -o gameOfLife -lncurses
+ * ./gamOfLife <filename>
  */
 
 int getNext(int prev, int tl, int tc, int tr, int ml, int mr, int bl, int bc, int br);
@@ -19,7 +21,7 @@ int getNext(int prev, int tl, int tc, int tr, int ml, int mr, int bl, int bc, in
 /**
  * Main function
  */
-int main() {
+int main(int argc, char* argv[]) {
 
   ///////////
   // setup //
@@ -29,30 +31,37 @@ int main() {
   int width;
   int height;
 
+  string fileName = "glider";
+
+  if (argc < 2)
+  {
+    cout <<"Incorrect number of arguments." << endl;
+    cout << "Usage: \n  ./gameOfLife <filename>" << endl;
+    return 1;
+  }
+
   // get dimensions from file
-  ifstream infile("input.txt");
+  ifstream inputFile(argv[1]);
 
   string line = "";
   
   // first line is width
-  getline(infile, line);
+  getline(inputFile, line);
   width = atoi(line.c_str());
 
   // then height
-  getline(infile, line);
+  getline(inputFile, line);
   height = atoi(line.c_str());
-
-  // need padding
-  width += 2;
-  height += 2;
 
   // get initial input from file
   string* input = new string[height];
   for (int i = 0; i < height; i++)
   {
-    getline(infile, line);
+    getline(inputFile, line);
     input[i] = line;
   }
+
+  inputFile.close();
 
   // create 2d array
   // pointer to pointer is array of pointers (int*[])
@@ -94,9 +103,9 @@ int main() {
     }
 
     // draw the grid
-    for (int i = 1; i < height - 1; i++)
+    for (int i = 0; i < height; i++)
     {
-      for (int j = 1; j < width - 1; j++)
+      for (int j = 0; j < width; j++)
       {
         char c = '.';
         if (grid[i][j]) {c = '#';}
@@ -106,43 +115,30 @@ int main() {
     }
 
 
-    for (int i = 1;  i < height - 1; i++)
+    for (int i = height;  i < (2 * height); i++)
     {
-      for (int j = 1; j < width - 1; j++)
+      for (int j = width; j < (2 * width); j++)
       {
-
-        // clear the edges of the grid
-        for (int k = 0; k < height; k++)
-        {
-          grid[k][0] = 0;
-          grid[k][width-1] = 0;
-        }
-        for (int k = 0; k < width; k++)
-        {
-          grid[0][k] = 0;
-          grid[height-1][k] = 0;
-        }
-
-        // calculate the next frame
-        next[i][j] = getNext(
-          grid[i][j],
-          grid[i-1][j-1],
-          grid[i-1][j],
-          grid[i-1][j+1],
-          grid[i][j-1],
-          grid[i][j+1],
-          grid[i+1][j-1],
-          grid[i+1][j],
-          grid[i+1][j+1]
+        // calculate the next frame (modulu gives infinite plane effect)
+        next[i % height][j % width] = getNext(
+          grid[(i) % height][(j) % width],
+          grid[(i-1) % height][(j-1) % width],
+          grid[(i-1) % height][(j) % width],
+          grid[(i-1) % height][(j+1) % width],
+          grid[(i) % height][(j-1) % width],
+          grid[(i) % height][(j+1) % width],
+          grid[(i+1) % height][(j-1) % width],
+          grid[(i+1) % height][(j) % width],
+          grid[(i+1) % height][(j+1) % width]
         );
       }
     }
 
     // wait
-    sleep(1);
+    usleep(120000);
 
     // clear the screen
-    for (int i = 1; i < height - 1; i++)
+    for (int i = 0; i < height; i++)
     {
       // print "go up a line", "clear line"
       fputs("\033[A\033[2K", stdout);
