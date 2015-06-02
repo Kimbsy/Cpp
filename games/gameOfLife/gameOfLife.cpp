@@ -21,7 +21,8 @@ int getNext(int prev, int tl, int tc, int tr, int ml, int mr, int bl, int bc, in
 /**
  * Main function
  */
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
 
   ///////////
   // setup //
@@ -35,8 +36,8 @@ int main(int argc, char* argv[]) {
 
   if (argc < 2)
   {
-    cout <<"Incorrect number of arguments." << endl;
-    cout << "Usage: \n  ./gameOfLife <filename>" << endl;
+    cout << "Too few arguments:" << endl;
+    cout << "      Usage: \n  ./gameOfLife <filename>" << endl;
     return 1;
   }
 
