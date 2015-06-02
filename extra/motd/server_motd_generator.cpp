@@ -7,6 +7,7 @@ using namespace std;
 
 int main (int argc, char* argv[])
 {
+  cout << argv[0];
   // font file name
   string fontFile = "motdFont";
 
@@ -20,6 +21,8 @@ int main (int argc, char* argv[])
   // grab the new name
   string serverName = argv[1];
 
+  cout << serverName;
+
   // make it lower case
   transform(serverName.begin(), serverName.end(), serverName.begin(), ::tolower);
 
@@ -32,13 +35,13 @@ int main (int argc, char* argv[])
 
   // each character is 9 lines high (first line is width int)
   // 9 * 52 = 468
-  string fontArray[208];
+  string fontArray[234];
 
   // get input from file
   ifstream inputFile(fontFile.c_str());
 
   // there are 9 * 52 lines in tthe fontFile
-  for (int i = 0; i < 208; i++)
+  for (int i = 0; i < 234; i++)
   {
     // get a line from the file
     string line = "";
@@ -62,11 +65,8 @@ int main (int argc, char* argv[])
 
     int k = 0;
 
-
     if (startLine >= 0)
     {
-      int width = atoi(fontArray[startLine].c_str());
-
       for (int j = startLine + 1; j < (startLine + 9); j++)
       {
         outputArray[k] += fontArray[j];
