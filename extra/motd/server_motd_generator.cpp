@@ -1,15 +1,14 @@
 #include <iostream>
 #include <algorithm>
-#include <string>
+#include <cstring>
 #include <fstream>
 
 using namespace std;
 
 int main (int argc, char* argv[])
 {
-  cout << argv[0];
   // font file name
-  string fontFile = "motdFont";
+  string fontFile = "motdFontTopBar";
 
   // check arguments are ok
   if (argc < 2) {
@@ -20,8 +19,6 @@ int main (int argc, char* argv[])
 
   // grab the new name
   string serverName = argv[1];
-
-  cout << serverName;
 
   // make it lower case
   transform(serverName.begin(), serverName.end(), serverName.begin(), ::tolower);
@@ -34,14 +31,14 @@ int main (int argc, char* argv[])
   char punctArray[26] = {'!','?','.',',','/',':',';','#','@','[',']','(',')','_','<','>','1','2','3','4','5','6','7','8','9','0'};
 
   // each character is 9 lines high (first line is width int)
-  // 9 * 52 = 468
-  string fontArray[234];
+  // 8 * 52 = 416
+  string fontArray[416];
 
   // get input from file
   ifstream inputFile(fontFile.c_str());
 
-  // there are 9 * 52 lines in tthe fontFile
-  for (int i = 0; i < 234; i++)
+  // there are 8 * 52 lines in the fontFile
+  for (int i = 0; i < 416; i++)
   {
     // get a line from the file
     string line = "";
@@ -54,20 +51,20 @@ int main (int argc, char* argv[])
   // close the file
   inputFile.close();
 
-  // output is 8 lines high
-  string outputArray[8] = { "╔", "║", "║", "║", "║", "║", "║", "╚"};
+  // output is 7 lines high (we'll do the 8th serperately)
+  string outputArray[7] = { "╔", "║", "║", "║", "║", "║", "║"};
 
   // for each character of the server name, loop through that characters lines appending them to output
   for (int i = 0; i < serverName.length(); i++)
   {
     // figure out starting line number
-    int startLine = 9 * (((int) serverName[i]) - 97);
+    int startLine = 8 * (((int) serverName[i]) - 97);
 
     int k = 0;
 
     if (startLine >= 0)
     {
-      for (int j = startLine + 1; j < (startLine + 9); j++)
+      for (int j = startLine + 1; j < (startLine + 8); j++)
       {
         outputArray[k] += fontArray[j];
         k++;
@@ -76,9 +73,8 @@ int main (int argc, char* argv[])
     else
     {
       // we're adding a space
-      // top and bottom
+      // top
       outputArray[0] += "════";
-      outputArray[7] += "════";
 
       // middle
       for (int j = 1; j < 7; j++)
@@ -92,15 +88,12 @@ int main (int argc, char* argv[])
   // add end cap
   // top and bottom
   outputArray[0] += "╗";
-  outputArray[7] += "╝";
   
   // middle
   for (int i = 1; i < 7; i++)
   {
     outputArray[i] += "║";
   }
-
-
 
 
   // add  descriptors
@@ -110,23 +103,58 @@ int main (int argc, char* argv[])
   for (int i = 2; i < argc; i++)
   {
 
-    cout << sizeof(argv[i]);
-
-    if (sizeof(argv[i]) > longest)
+    if (strlen(argv[i]) > longest)
     {
-      longest = sizeof(argv[i]);
+      longest = strlen(argv[i]);
     }
   }
 
-  cout << longest << endl;
+  // create bottom line
+  string bottom = "╚╦";
 
+  // extra 2 for spaces
+  for (int i = 0; i < (longest + 2); i++)
+  {
+    bottom += "═";
+  }
 
+  bottom += "╦";
 
+  // divide by 3 bytes
+  for (int i = 0; i < (strlen(outputArray[0].c_str()) / 3) - (longest + 6); i++) {
+    bottom += "═";
+  }
+
+  bottom += "╝";
 
   // output
-  for (int i = 0; i < 8; i++)
+  for (int i = 0; i < 7; i++)
   {
     cout << outputArray[i] << endl;
   }
+
+  cout << bottom << endl;
+
+  // descriptors
+  for (int i = 2; i < argc; i++)
+  {
+    if (i != 2)
+    {
+      cout << " ║ " << string(longest, ' ') << " ║\n";
+    }
+
+    int extraSpace = longest - strlen(argv[i]);
+    cout << " ║ " << argv[i] << string(extraSpace, ' ') << " ║\n";
+  }
+
+  // descriptor bottom
+  cout << " ╚";
+  for (int i = 0; i < (longest + 2); i++)
+  {
+    cout << "═";
+  }
+  cout << "╝";
+
+  cout << endl;
 
 }
