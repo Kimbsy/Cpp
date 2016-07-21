@@ -58,7 +58,7 @@ void removeListItem(ListItem* list, int id)
 /**
  * Print the elements of the list to the screen.
  *
- * @param list Pointer to the firts element in the list.
+ * @param list Pointer to the first element in the list.
  */
 void printList(ListItem* list)
 {
