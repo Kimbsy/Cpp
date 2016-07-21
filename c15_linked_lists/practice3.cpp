@@ -73,7 +73,7 @@ void printList(ListItem* list)
 }
 
 /**
- * Add items to list in alphabetical order.
+ * Search for an item in a lkist by name.
  */
 int main()
 {
