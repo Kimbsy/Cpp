@@ -8,7 +8,7 @@ using namespace std;
  *
  * @return The choice the user made.
  */
-int listOptions()
+int getChoice()
 {
   cout << "Please choose one of the following options:" << endl;
 
@@ -126,7 +126,7 @@ map<string, string> deleteContact(map<string, string> book)
 void addressBook(map<string, string> book)
 {
   bool exit  = false;
-  int choice = listOptions();
+  int choice = getChoice();
 
   switch (choice) {
     case 1:

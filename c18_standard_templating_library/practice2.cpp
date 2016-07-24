@@ -32,7 +32,7 @@ void showScores()
   int maxLength = 0;
   for (int i = 0; i < names.size(); i++) {
     int length = names[i].length();
-    maxLength = maxLength < length ? length : maxLength;
+    maxLength  = maxLength < length ? length : maxLength;
   }
 
   cout << endl;
