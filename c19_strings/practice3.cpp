@@ -2,6 +2,42 @@
 
 using namespace std;
 
+// Test string to demonstrate parsing.
+string testString = "<head>"
+  "The head\n"
+  "</head>\n"
+  "<body>\n"
+  "the body \n"
+  "some more body\n"
+  "<a href=\"someUrl\">hyperlink text</a>\n"
+  "<b>some bold text</b>\n"
+  "<a href=\"anotherUrl\">hyperlink text</a>\n"
+  "<i>some italic text</i>\n"
+  "<b>some bold <i>and italic</i> text <a href=\"www.withHyperlinks.com\">with a hyperlink in it</a></b>\n"
+  "</body>\n"
+  "footer text";
+
+/**
+ * Get the HTML input from the user.
+ *
+ * @param html Pointer to the html string.
+ */
+void readInput(string* html)
+{
+  string line;
+
+  cout << "Please enter your HTML terminated by an empty line:" << endl;
+
+  while (true) {
+    getline(cin, line, '\n');
+
+    if (line.length() == 0) {
+      break;
+    }
+
+    *html += line + "\n";
+  }
+}
 
 /**
  * Extract the html from inside the body tags.
@@ -35,10 +71,8 @@ void parseLinks(string* html)
     int startUrl  = html->find('"', i) + 1;
     int endUrl    = html->find('"', startUrl);
 
-    int endText = i;
-
     // Add pre-anchor text.
-    parsedHtml += html->substr(startText, (endText - startText));
+    parsedHtml += html->substr(startText, (i - startText));
 
     // Add url in place of anchor.
     parsedHtml += "(" + html->substr(startUrl, (endUrl - startUrl)) + ")";
@@ -46,9 +80,47 @@ void parseLinks(string* html)
     startText = endAnchor;
   }
 
-  parsedHtml += html->substr(startText, (html->length() - startText));  
+  parsedHtml += html->substr(startText, (html->length() - startText));
 
-  cout << parsedHtml << endl;
+  *html = parsedHtml;
+}
+
+/**
+ * Replace any simple formatting, single character tag with an appropriate
+ *   replacement.
+ *
+ * @param html    Pointer to the html string.
+ * @param type    The type of tag to replace.
+ * @param replace The character to replace the tag with.
+ */
+void parseSimpleFormatTag(string* html, string type, string replace)
+{
+  int startText     = 0;
+  string parsedHtml = "";
+
+  string openTag  = "<" + type + ">";
+  string closeTag = "</" + type + ">";
+
+  for (
+    int i = html->find(openTag, 0);
+    i != string::npos;
+    i = html->find(openTag, ++i)
+  ) {
+    int startFormat = i + 3;
+    int endFormat   = html->find(closeTag, i);
+    
+    // Add pre-formatted text.
+    parsedHtml += html->substr(startText, (i - startText));
+
+    // Add formetted text.
+    parsedHtml += replace + html->substr(startFormat, (endFormat - startFormat)) + replace;
+
+    startText = endFormat + 4;
+  }
+
+  parsedHtml += html->substr(startText, (html->length() - startText));
+
+  *html = parsedHtml;
 }
 
 /**
@@ -58,17 +130,7 @@ void parseLinks(string* html)
  */
 void parseBold(string* html)
 {
-  string type     = "b";
-  string openTag  = "<" + type + ">";
-  string closeTag = "</" + type + ">";
-
-  for (
-    int i = html->find(openTag, 0);
-    i != string::npos;
-    i = html->find(openTag, ++i)
-  ) {
-    
-  }
+  parseSimpleFormatTag(html, "b", "*");
 }
 
 /**
@@ -78,18 +140,18 @@ void parseBold(string* html)
  */
 void parseItalic(string* html)
 {
-
+  parseSimpleFormatTag(html, "i", "_");
 }
 
 /**
- * Get the HTML input from the user.
+ * Print the parsed html to the screen.
  *
  * @param html Pointer to the html string.
  */
-void readInput(string* html)
+void printOutput(string* html)
 {
-  cout << "Please enter your HTML:" << endl;
-  getline(cin, *html, '\n');
+  cout << endl << "Parsed HTML output:" << endl;
+  cout << *html << endl;
 }
 
 /**
@@ -104,6 +166,7 @@ int main()
 {
   string* html = new string;
 
+  // html = &testString;
   readInput(html);
 
   parseBody(html);
@@ -111,5 +174,5 @@ int main()
   parseBold(html);
   parseItalic(html);
 
-  // cout << *html << endl;
+  printOutput(html);
 }
